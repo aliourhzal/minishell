@@ -45,7 +45,7 @@ int	quotes_checker(char	*line, t_minishell *main)
 	}
 	if (st == OPEN)
 		return (ft_error(NULL, "Syntax error: Unclosed quote.\n", 0, main));
-	return (st);
+	return (0);
 }
 
 int	pipe_checker(char	*line, t_minishell *main)
@@ -55,8 +55,11 @@ int	pipe_checker(char	*line, t_minishell *main)
 	i = 0;
 	while(line[i] == ' ')
 		i++;
-	if (line[i] == '|' )
+	if (line[i] == '|')
+	{
 		ft_error(NULL, "Syntax error: near unexpected token `|'\n", 0, main);	
+		return (1);
+	}
 	while(line[++i])
 	{
 		if (line[i] == '|')
@@ -74,32 +77,20 @@ int	pipe_checker(char	*line, t_minishell *main)
 	return (0);
 }
 
-int	redirect_checker(char *line, t_minishell *main)
-{
-	int	i;
-
-	i = -1;
-	while(line[++i])
-	{
-		if (line[i] == '>' && line[i + 2] == '>')
-			ft_error(NULL, "Syntax error near unexpected token `>'\n", 0, main);
-		else if (line[i] == '<' && line[i + 2] == '<')
-			ft_error(NULL, "Syntax error near unexpected token `<'\n", 0, main);
-	}
-}
-
-void	check_errors(char *line, t_minishell *main)
+int	check_errors(char *line, t_minishell *main)
 {
 	if (quotes_checker(line, main))
-		return ;
+		return (1);
 	if (pipe_checker(line, main))
-		return ;
-	if (redirect_checker(line, main))
-		return ;
+		return (1);
+	return (0);
 }
 
-void    lexer(t_minishell   *main, char *line)
+void	lexer(t_minishell   *main, char *line)
 {
-	check_errors(line, main);
+	if (check_errors(line, main))
+		return ;
 	tokenize_line(line, main);
+	variable_expansion(line, main);
+	//executor(line, main);
 }

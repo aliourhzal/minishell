@@ -2,42 +2,40 @@
 
 int count_table(char **table)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while(table[i])
-        i++;
-    return (i);
+	i = 0;
+	while(table[i])
+		i++;
+	return (i);
 }
 
 void    free_table(char **table)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while(table[i])
-        free(table[i++]);
-    free(table);
+	i = 0;
+	while(table[i])
+		free(table[i++]);
+	free(table);
 }
 
 void    set_envp(t_minishell    *main, char **envp)
 {
-    int i;
-    int len;
+	int i;
+	int len;
 
-    i = -1;
-    len = count_table(envp);
-    main->envp = malloc((len + 1) * sizeof(char *));
-    while(++i < len)
-    {
-        main->envp[i] = ft_strdup(envp[i]);
-    }
-    main->envp[i] = NULL;
+	i = -1;
+	len = count_table(envp);
+	main->envp = malloc((len + 1) * sizeof(char *));
+	while(++i < len)
+		main->envp[i] = ft_strdup(envp[i]);
+	main->envp[i] = NULL;
 }
 
 void    readcmd(t_minishell *main)
 {
-    char		*line;
+	char		*line;
 	char		*prompt;
 
 	prompt = "🐵"BOLDBLUE" Minishell$> " RESET;
@@ -46,7 +44,7 @@ void    readcmd(t_minishell *main)
 	{
 		add_history(line);
 		if (line[0])
-			lexer(line, main);
+			lexer(main, line);
 		if (main->exit == 1)
 			break ;
 		free(line);
@@ -57,13 +55,12 @@ void    readcmd(t_minishell *main)
 
 int main(int ac, char** av, char **env)
 {
-    t_minishell main;
+	t_minishell main;
 
-    (void)  ac;
-    (void)  av;
-    main.full_line = NULL;
-    main.full_line->cmd = NULL;
-    main.full_line->tokens = NULL;
-    set_envp(&main, env);
-    readcmd(&main);
+	(void)  ac;
+	(void)  av;
+
+	main.full_line = NULL;
+	set_envp(&main, env);
+	readcmd(&main);
 }
