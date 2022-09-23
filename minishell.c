@@ -5,8 +5,11 @@ int count_table(char **table)
 	int i;
 
 	i = 0;
-	while(table[i])
-		i++;
+	if (table)
+	{
+		while(table[i])
+			i++;
+	}
 	return (i);
 }
 
@@ -15,22 +18,28 @@ void    free_table(char **table)
 	int i;
 
 	i = 0;
-	while(table[i])
-		free(table[i++]);
-	free(table);
+	if (table)
+	{
+		while(table[i])
+			free(table[i++]);
+		free(table);
+	}
 }
 
 void    set_envp(t_minishell    *main, char **envp)
 {
-	int i;
-	int len;
+	int	i;
+	char **p;
 
-	i = -1;
-	len = count_table(envp);
-	main->envp = malloc((len + 1) * sizeof(char *));
-	while(++i < len)
-		main->envp[i] = ft_strdup(envp[i]);
-	main->envp[i] = NULL;
+	p = ft_split(envp[0], '=');
+	main->envp = ft_lstnew(p[0], p[1]);
+	i = 0;
+	while(envp[++i])
+	{
+		p = ft_split(envp[i], '=');
+		ft_lstadd_back(&main->envp, ft_lstnew(p[0], p[1]));
+		free_table(p);
+	}
 }
 
 void    readcmd(t_minishell *main)
@@ -61,6 +70,7 @@ int main(int ac, char** av, char **env)
 	(void)  av;
 
 	main.full_line = NULL;
+	main.fd = malloc(2 * sizeof(int));
 	set_envp(&main, env);
 	readcmd(&main);
 }

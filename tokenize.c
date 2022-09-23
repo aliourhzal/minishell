@@ -131,7 +131,7 @@ int    tokenize_text(char *line, t_command *t_line)
 	i = 0;
 
 	while(line[i] && line[i] != ' ' && line[i] != '<'
-		&& line[i] != '>'&& line[i] != '|')
+		&& line[i] != '>' && line[i] != '|' && line[i] != DBL_QU && line[i] != SNGL_QU)
 		i++;
 	t_line->cmd = insert_text(t_line->cmd, dup_till_end(line, line[i]));
 	t_line->tokens = insert_token(t_line->tokens, WORD);

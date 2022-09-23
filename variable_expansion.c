@@ -2,23 +2,12 @@
 
 char	*extrat_value(char *name, t_minishell *main)
 {
-	char	**p;
-	char	*value;
-	int	i;
+	t_env *head;
 
-	i = -1;
-	while(main->envp[++i])
-	{
-		p = ft_split(main->envp[i], '=');
-		if (!ft_strcmp(p[0], name))
-		{
-			value = ft_strdup(p[1]);
-			free_table(p);
-			return(value);
-		}
-		free_table(p);
-	}
-	return (NULL);
+	head = main->envp;
+	while(ft_strcmp(name, head->id))
+		head = head->next;
+	return(ft_strdup(head->value));
 }
 
 char	*no_variable(char *cmd_word, int start, int end)
@@ -59,8 +48,6 @@ char	*var_replace(char *value, char *cmd_word, int i, int j)
 
 char	*extract_name(char *cmd_word, t_minishell *main)
 {
-	printf("before: %s\n", cmd_word);
-
 	int 	i;
 	int		j;
 	char	*name;
@@ -80,10 +67,8 @@ char	*extract_name(char *cmd_word, t_minishell *main)
 			cmd_word = var_replace(value, cmd_word, i, j);
 		}
 	}
-	printf("after: %s\n", cmd_word);
 	return (cmd_word);
 }
-
 
 void	variable_expansion( char *line, t_minishell   *main)
 {
