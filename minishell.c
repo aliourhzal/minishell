@@ -32,12 +32,12 @@ void    set_envp(t_minishell    *main, char **envp)
 	char **p;
 
 	p = ft_split(envp[0], '=');
-	main->envp = ft_lstnew(p[0], p[1]);
-	i = 0;
+	main->envp = new_env(p[0], p[1]);
+	i = -1;
 	while(envp[++i])
 	{
 		p = ft_split(envp[i], '=');
-		ft_lstadd_back(&main->envp, ft_lstnew(p[0], p[1]));
+		add_env(&main->envp, new_env(p[0], p[1]));
 		free_table(p);
 	}
 }
@@ -56,7 +56,7 @@ void    readcmd(t_minishell *main)
 			lexer(main, line);
 		if (main->exit == 1)
 			break ;
-		free(line);
+		//free(line);
 		line = readline(prompt);
 	}
 	free(line);

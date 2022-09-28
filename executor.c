@@ -165,23 +165,79 @@ char	**extract_args(t_command *cmd)
 	args = NULL;
 	while (cmd->tokens[i] == SPACES)
 		i++;
-	i++;
-	while (cmd->tokens[i + 1] == SPACES)
-		i++;
-	while (cmd->cmd[++i])
+	while (cmd->cmd[i])
 	{
-		if (cmd->tokens[i] == SPACES)
-		{
-			while (cmd->tokens[i] == SPACES)
-				i++;
-			if (cmd->tokens[i] == WORD)
-				args = append_args(args, cmd->cmd[i - 1]);
-			else if (!cmd->tokens[i])
-				i--;
-		}
-		args = append_args(args, cmd->cmd[i]);
+		if (cmd->tokens[i] != SPACES)
+			args = append_args(args, cmd->cmd[i]);
+		i++;
 	}
 	return (args);
+}
+
+int	is_accessible(char *file)
+{
+	if (!access(file, F_OK))
+		if (!access(file, X_OK))
+			return (1);
+	return (0);
+}
+
+char	*add_slash(char *path)
+{
+	char	*cmd;
+
+	cmd = ft_strjoin(path, "/");
+	free(path);
+	return (cmd);
+}
+
+char	*find_path(char *cmd_word, t_minishell *main)
+{
+	int		i;
+	char	**paths;
+	char	*ap_cmd;
+
+	i = -1;
+	paths = ft_split(extract_value("PATH", main), ':');
+	if (!paths)
+		return (NULL);
+	while (paths[++i])
+	{
+		paths[i] = add_slash(paths[i]);
+		ap_cmd = ft_strjoin(paths[i], cmd_word);
+		if (!ap_cmd)
+			return (NULL);
+		if (is_accessible(ap_cmd))
+			break ;
+		else if (!access(ap_cmd, F_OK) && access(ap_cmd, X_OK))
+			ft_error(ap_cmd, NULL, 1, main);
+		free(ap_cmd);
+	}
+	if (!paths[i])
+		ap_cmd = NULL;
+	free_table(paths);
+	return (ap_cmd);
+}
+
+void	execute_outsiders(char *cmd_word, char **args, t_minishell *main)
+{
+	char	*ap_cmd;
+
+	if (!access(cmd_word, F_OK))
+	{
+		if (!access(cmd_word, X_OK))
+			execve(cmd_word, args, NULL);
+		else
+			ft_error(cmd_word, NULL, 1, main);
+	}
+	else
+	{
+		ap_cmd = find_path(cmd_word, main);
+		if (!ap_cmd)
+			ft_error(cmd_word, "command not found\n", 0, main);
+		execve(ap_cmd, args, NULL);
+	}
+	free(ap_cmd);
 }
 
 void    execute_cmd(t_command *cmd, t_minishell *main, int i)
@@ -202,56 +258,35 @@ void    execute_cmd(t_command *cmd, t_minishell *main, int i)
 	cmd_word = extract_cmd(cmd);
 	args = extract_args(cmd);
 	if (cmd_manager(cmd_word, args, main))
+	{
+		free_table(args);
 		return ;
+	}
+	execute_outsiders(cmd_word, args, main);
+	free_table(args);
 }
 
 void	executor(t_minishell   *main)
 {
-	//int	id;
 	int i;
-	int save_std[2];
+	int	id;
 
-	save_std[0] = dup(0);
-	save_std[1] = dup(1);
 	i = -1;
 	while(++i < main->cmds_count)
 	{
 		if (i + 1 < main->cmds_count)
-		{
 			pipe(main->fd);
+		id = fork();
+		if (id < 0)
+			ft_error("fork", NULL, 1, main);
+		if (id == 0)
+			execute_cmd(&main->full_line[i], main, i);
+		if (i + 1 < main->cmds_count)
+		{
 			dup2(main->fd[0], 0);
 			close(main->fd[0]);
 		}
-		/*id = fork();
-		if (id < 0)
-			return (perror("fork"));
-		if (id == 0)*/
-			execute_cmd(&main->full_line[i], main, i);
-		if (i + 1 >= main->cmds_count)
+		else
 			close(0);
 	}
-	dup2(save_std[0], 0);
 }
-
-/*
-	int x1 = -1;
-	int x2;
-	while(++x1 < main->cmds_count)
-	{
-		x2 = -1;
-		while (main->full_line[x1].cmd[++x2])
-			printf(".%s.\n", main->full_line[x1].cmd[x2]);
-		printf("--------------------------\n");
-	}
-*/
-
-/*int i;
-
-	i = -1;
-	while(cmd->cmd[++i])
-	{
-		printf("%s\n", cmd->cmd[i]);
-	}
-	printf("-----------------------------\n");*/
-
-/* aaaa aaaaa< a > aa >> aaa  aaaa | bbb bbbb bb"bbb"'bbbb' | ccc ccc */

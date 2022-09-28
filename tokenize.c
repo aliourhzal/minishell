@@ -9,9 +9,12 @@ char    *dup_till_end(char *start, char end)
 	while(start[i] != end)
 		i++;
 	chunk = malloc((i + 1) * sizeof(char));
-	i = -1;
-	while(start[++i] != end)
+	i = 0;
+	while(start[i] != end)
+	{
 		chunk[i] = start[i];
+		i++;
+	}
 	chunk[i] = '\0';
 	return (chunk);
 }
@@ -213,4 +216,6 @@ void    tokenize_line(char *line, t_minishell *main)
 	if (token_errors(&t_line, main))
 		return ;
 	parser(&t_line, main);
+    free_table(t_line.cmd);
+    free(t_line.tokens);
 }

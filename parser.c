@@ -49,10 +49,12 @@ void    parser(t_command *t_line, t_minishell *main)
         main->full_line[cmd_index].tokens = malloc((cmd_words + 1) * sizeof(char));
         while(++j < cmd_words)
         {
-            main->full_line[cmd_index].cmd[j] = t_line->cmd[i++];
+            main->full_line[cmd_index].cmd[j] = ft_strdup(t_line->cmd[i++]);
             main->full_line[cmd_index].tokens[j] = t_line->tokens[i - 1];
         }
         main->full_line[cmd_index].cmd[j] = NULL;
         main->full_line[cmd_index].tokens[j] = '\0';
+        if (!t_line->tokens[i])
+            break ;
     }
 }

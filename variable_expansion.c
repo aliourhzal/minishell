@@ -1,13 +1,17 @@
 #include "minishell.h"
 
-char	*extrat_value(char *name, t_minishell *main)
+char	*extract_value(char *name, t_minishell *main)
 {
 	t_env *head;
 
+	if (!name)
+		return (NULL);
 	head = main->envp;
-	while(ft_strcmp(name, head->id))
+	while(head && ft_strcmp(name, head->id))
 		head = head->next;
-	return(ft_strdup(head->value));
+	if (head)
+		return(ft_strdup(head->value));
+	return (NULL);
 }
 
 char	*no_variable(char *cmd_word, int start, int end)
@@ -51,30 +55,33 @@ char	*extract_name(char *cmd_word, t_minishell *main)
 	int 	i;
 	int		j;
 	char	*name;
-	char	*value;
 
 	i = -1;
-	name = NULL;
+	if (!ft_strcmp(cmd_word, "$"))
+		return (cmd_word);
 	while (cmd_word[++i])
 	{
-		if (cmd_word[i] == '$')
+		if (cmd_word[i] == '$' && cmd_word[i + 1])
 		{
 			j = i + 1;
-			while(ft_isalpha(cmd_word[j]) || ft_isalnum(cmd_word[j]))
-				j++;
-			name = dup_till_end(&cmd_word[i + 1], cmd_word[j]);
-			value = extrat_value(name, main);
-			cmd_word = var_replace(value, cmd_word, i, j);
+			if (cmd_word[j] >= '0' && cmd_word[j] <= '9')
+				name = dup_till_end(&cmd_word[i + 1], cmd_word[++j]);
+			else
+			{
+				while(ft_isalpha(cmd_word[j]) || ft_isalnum(cmd_word[j]))
+					j++;
+				name = dup_till_end(&cmd_word[i + 1], cmd_word[j]);
+			}
+			cmd_word = var_replace(extract_value(name, main), cmd_word, i, j);
 		}
 	}
 	return (cmd_word);
 }
 
-void	variable_expansion( char *line, t_minishell   *main)
+void	variable_expansion(t_minishell   *main)
 {
 	int i;
 	int j;
-	(void)line;
 
 	i = -1;
 	while(++i < main->cmds_count)
@@ -84,14 +91,4 @@ void	variable_expansion( char *line, t_minishell   *main)
 			if (main->full_line[i].tokens[j] == WORD || main->full_line[i].tokens[j] == WORD_D)
 				main->full_line[i].cmd[j] = extract_name(main->full_line[i].cmd[j], main);
 	}
-	/*(void)line;
-	int x = -1;
-	int y;
-	while(++x < main->cmds_count)
-	{
-		y = -1;
-		while (main->full_line[x].cmd[++y])
-			printf(".%s.\n", main->full_line[x].cmd[y]);
-		printf("--------------------------\n");
-	}*/
 }

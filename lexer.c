@@ -166,24 +166,35 @@ void	combine_words(t_minishell *main)
 void	lexer(t_minishell *main, char *line)
 {
 	int	i;
+	int	status;
 
 	i = 0;
+	main->save_std[0] = dup(0);
+	main->save_std[1] = dup(1);
 	if (check_errors(line, main))
 		return ;
 	while (line[i] == ' ')
 		i++;
+	if (!line[i])
+		return ;
 	tokenize_line(&line[i], main);
-	variable_expansion(&line[i], main);
+	variable_expansion(main);
 	combine_words(main);
-	// (void)line;
-	/*int x1 = -1;
-	int x2;
-	while(++x1 < main->cmds_count)
-	{
-		x2 = -1;
-		while (main->full_line[x1].cmd[++x2])
-			printf(".%s.\n", main->full_line[x1].cmd[x2]);
-		printf("--------------------------\n");
-	}*/
 	executor(main);
+	wait(&status);
+	dup2(main->save_std[0], 0);
+	close(main->save_std[0]);
 }
+
+	/*int x = -1;
+	int	y;
+	while (++x < main->cmds_count)
+	{
+		y = -1;
+		while(main->full_line[x].cmd[++y])
+		{
+			write(1, "nnhello\n", 7);
+			printf("%s", main->full_line[x].cmd[y]);
+		}
+	}
+	write(1, "world\n", 7);*/
