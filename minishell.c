@@ -56,7 +56,7 @@ void    readcmd(t_minishell *main)
 			lexer(main, line);
 		if (main->exit == 1)
 			break ;
-		//free(line);
+		free(line);
 		line = readline(prompt);
 	}
 	free(line);
@@ -70,6 +70,8 @@ int main(int ac, char** av, char **env)
 	(void)  av;
 
 	main.full_line = NULL;
+	main.save_std[0] = dup(0);
+	main.save_std[1] = dup(1);
 	main.fd = malloc(2 * sizeof(int));
 	set_envp(&main, env);
 	readcmd(&main);

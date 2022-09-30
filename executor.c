@@ -257,13 +257,10 @@ void    execute_cmd(t_command *cmd, t_minishell *main, int i)
 		cmd = remove_redirect(cmd);
 	cmd_word = extract_cmd(cmd);
 	args = extract_args(cmd);
-	if (cmd_manager(cmd_word, args, main))
-	{
-		free_table(args);
-		return ;
-	}
-	execute_outsiders(cmd_word, args, main);
+	if (!cmd_manager(cmd_word, args, main))
+		execute_outsiders(cmd_word, args, main);
 	free_table(args);
+	free(cmd_word);
 }
 
 void	executor(t_minishell   *main)

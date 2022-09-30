@@ -68,6 +68,9 @@ void	variable_expansion(t_minishell   *main);
 char    *dup_till_end(char *start, char end);
 int		cmd_manager(char *cmd_word, char **args, t_minishell *main);
 char	*extract_value(char *name, t_minishell *main);
+void	wildcard_expansion(t_minishell *main);
+char	**add_line(char **table, char *new_line);
+int		ft_revncmp(char *s, char *to_find);
 
 //envp
 t_env	*new_env(char *id, char *value);

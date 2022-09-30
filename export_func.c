@@ -98,21 +98,22 @@ void	update_prop(char *arg, t_minishell *main)
 	}
 }
 
-char	**add_line(char **envp, char *new_line)
+char	**add_line(char **table, char *new_line)
 {
 	int	i;
 	char	**new_envp;
 
 	i = 0;
-	new_envp = malloc((count_table(envp) + 2) * sizeof(char *));
-	while(envp && envp[i])
+	new_envp = malloc((count_table(table) + 2) * sizeof(char *));
+	while(table && table[i])
 	{
-		new_envp[i] = envp[i];
+		new_envp[i] = table[i];
 		i++;
 	}
 	new_envp[i++] = new_line;
 	new_envp[i] = 0;
-	free(envp);
+    if (table)
+	    free(table);
 	return (new_envp);
 }
 
