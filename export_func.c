@@ -137,7 +137,7 @@ char	**envp_table(t_minishell *main)
 		}
 		if (line)
 		{
-			envp = add_line(envp, ft_strdup(line));
+			envp = insert_text(envp, ft_strdup(line));
 			free(line);
 		}
 		tmp = tmp->next;

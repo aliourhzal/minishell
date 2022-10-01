@@ -62,15 +62,41 @@ int		count_table(char **table);
 void    tokenize_line(char *line, t_minishell *main);
 void    lexer(t_minishell   *main, char *line);
 void    parser(t_command *t_line, t_minishell *main);
-int		ft_error(char *cmd, char *msg1, int x, t_minishell *main);
 void	executor(t_minishell   *main);
 void	variable_expansion(t_minishell   *main);
-char    *dup_till_end(char *start, char end);
 int		cmd_manager(char *cmd_word, char **args, t_minishell *main);
 char	*extract_value(char *name, t_minishell *main);
 void	wildcard_expansion(t_minishell *main);
 char	**add_line(char **table, char *new_line);
 int		ft_revncmp(char *s, char *to_find);
+int		ft_strstrn(const char *haystack, const char *needle, size_t len);
+
+//wildcard utils
+char	**extract_pat(char *word, char **pat);
+char	**filter_files(char **files, char *pat);
+char	**match_astr(char *word, char **files);
+void	construct_cmd(char *word, char token, t_command *final_cmd);
+char	**cd_files(void);
+
+//tokenize utils
+int		tokenize_redirect(char *line, t_command *t_line);
+int		tokenize_quotes(char *line, t_command *t_line);
+int		tokenize_pipe(char *line, t_command *t_line);
+int		tokenize_spaces(char *line, t_command *t_line);
+int		tokenize_text(char *line, t_command *t_line);
+int		tokenize_pipe(char *line, t_command *t_line);
+
+//general utils
+char    *dup_till_end(char *start, char end);
+char	**insert_text(char **table, char *new_line);
+char    *insert_token(char *token_table, char new_token);
+
+//error check
+int		ft_error(char *cmd, char *msg1, int x, t_minishell *main);
+int		quote_state(int	*st, char *line, int i);
+int		quotes_checker(char	*line, t_minishell *main);
+int		pipe_checker(char	*line, t_minishell *main);
+int		check_errors(char *line, t_minishell *main);
 
 //envp
 t_env	*new_env(char *id, char *value);
@@ -78,6 +104,7 @@ t_env	*last_env(t_env *lst);
 void	add_env(t_env **lst, t_env *new);
 t_env	*search_env(t_env *envp, char *id);
 int		del_env(t_env *lst, char *id);
+
 // commands
 void	echo_func(char **args, t_minishell *main);
 void	pwd_func(t_minishell *minishell);

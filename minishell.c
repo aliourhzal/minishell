@@ -58,6 +58,7 @@ void    readcmd(t_minishell *main)
 			break ;
 		free(line);
 		line = readline(prompt);
+		printf("line: %s\n", line);
 	}
 	free(line);
 }
