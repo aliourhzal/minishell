@@ -1,4 +1,4 @@
-#include "minishell.c"
+#include "minishell.h"
 
 int	ft_error(char *cmd, char *msg1, int x, t_minishell *main)
 {

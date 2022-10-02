@@ -57,8 +57,7 @@ typedef struct s_minishell
 	int	save_std[2];
 } t_minishell;
 
-void	free_table(char **table);
-int		count_table(char **table);
+
 void    tokenize_line(char *line, t_minishell *main);
 void    lexer(t_minishell   *main, char *line);
 void    parser(t_command *t_line, t_minishell *main);
@@ -70,6 +69,30 @@ void	wildcard_expansion(t_minishell *main);
 char	**add_line(char **table, char *new_line);
 int		ft_revncmp(char *s, char *to_find);
 int		ft_strstrn(const char *haystack, const char *needle, size_t len);
+
+//cmd path utils
+char	*extract_cmd(t_command *cmd);
+char	**append_args(char **args, char *new_arg);
+char	**extract_args(t_command *cmd);
+int		is_accessible(char *file);
+char	*add_slash(char *path);
+
+//redirect utils
+int			is_redirection(char token);
+char		**skip_redirect(t_command	*cmd);
+char		*skip_tokens(char *tokens);
+t_command	*remove_redirect(t_command	*cmd);
+void		change_des(int *fd_files, char *file);
+
+// redirect hundler
+void	redirect_hundler(t_command *cmd/*, int *check*/);
+
+//error check
+int		ft_error(char *cmd, char *msg1, int x, t_minishell *main);
+int		quote_state(int	*st, char *line, int i);
+int		quotes_checker(char	*line, t_minishell *main);
+int		pipe_checker(char	*line, t_minishell *main);
+int		check_errors(char *line, t_minishell *main);
 
 //wildcard utils
 char	**extract_pat(char *word, char **pat);
@@ -84,12 +107,13 @@ int		tokenize_quotes(char *line, t_command *t_line);
 int		tokenize_pipe(char *line, t_command *t_line);
 int		tokenize_spaces(char *line, t_command *t_line);
 int		tokenize_text(char *line, t_command *t_line);
-int		tokenize_pipe(char *line, t_command *t_line);
 
 //general utils
 char    *dup_till_end(char *start, char end);
 char	**insert_text(char **table, char *new_line);
 char    *insert_token(char *token_table, char new_token);
+void	free_table(char **table);
+int		count_table(char **table);
 
 //error check
 int		ft_error(char *cmd, char *msg1, int x, t_minishell *main);

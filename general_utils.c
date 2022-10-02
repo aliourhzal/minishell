@@ -64,3 +64,29 @@ char    *insert_token(char *token_table, char new_token)
 		free(token_table);
 	return (new_Ttable);
 }
+
+int count_table(char **table)
+{
+	int i;
+
+	i = 0;
+	if (table)
+	{
+		while(table[i])
+			i++;
+	}
+	return (i);
+}
+
+void    free_table(char **table)
+{
+	int i;
+
+	i = 0;
+	if (table)
+	{
+		while(table[i])
+			free(table[i++]);
+		free(table);
+	}
+}

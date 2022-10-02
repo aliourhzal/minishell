@@ -1,31 +1,5 @@
 #include "minishell.h"
 
-int count_table(char **table)
-{
-	int i;
-
-	i = 0;
-	if (table)
-	{
-		while(table[i])
-			i++;
-	}
-	return (i);
-}
-
-void    free_table(char **table)
-{
-	int i;
-
-	i = 0;
-	if (table)
-	{
-		while(table[i])
-			free(table[i++]);
-		free(table);
-	}
-}
-
 void    set_envp(t_minishell    *main, char **envp)
 {
 	int	i;
@@ -58,7 +32,6 @@ void    readcmd(t_minishell *main)
 			break ;
 		free(line);
 		line = readline(prompt);
-		printf("line: %s\n", line);
 	}
 	free(line);
 }
