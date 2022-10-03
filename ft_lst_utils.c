@@ -9,14 +9,14 @@ void	add_env(t_env **lst, t_env *new)
 		if (*lst == NULL)
 		{
 			*lst = new;
-			new = NULL;
+			new->next = NULL;
 		}
 		else
 		{
 			last = last_env(*lst);
 			last->next = new;
 			new->prev = last;
-			new = NULL;
+			new->next = NULL;
 		}
 	}
 }
@@ -73,5 +73,7 @@ t_env	*search_env(t_env *envp, char *id)
 	head = envp;
 	while(head && ft_strcmp(id, head->id))
 		head = head->next;
+	if (!head)
+		return (NULL);
 	return(head);
 }

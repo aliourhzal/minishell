@@ -50,6 +50,8 @@ typedef struct s_minishell
 {
 	t_env *envp;
 	t_command *full_line;
+	char	**args;
+	char	**env;
 	int	*fd;
 	int	cmds_count;
 	int exit;
@@ -66,9 +68,9 @@ void	variable_expansion(t_minishell   *main);
 int		cmd_manager(char *cmd_word, char **args, t_minishell *main);
 char	*extract_value(char *name, t_minishell *main);
 void	wildcard_expansion(t_minishell *main);
-char	**add_line(char **table, char *new_line);
 int		ft_revncmp(char *s, char *to_find);
 int		ft_strstrn(const char *haystack, const char *needle, size_t len);
+char	**envp_table(t_minishell *main);
 
 //cmd path utils
 char	*extract_cmd(t_command *cmd);

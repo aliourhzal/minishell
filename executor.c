@@ -28,14 +28,14 @@ char	*find_path(char *cmd_word, t_minishell *main)
 	return (ap_cmd);
 }
 
-void	execute_outsiders(char *cmd_word, char **args, t_minishell *main)
+void	execute_outsiders(char *cmd_word, t_minishell *main)
 {
 	char	*ap_cmd;
 
 	if (!access(cmd_word, F_OK))
 	{
 		if (!access(cmd_word, X_OK))
-			execve(cmd_word, args, NULL);
+			execve(cmd_word, main->args, main->env);
 		else
 			ft_error(cmd_word, NULL, 1, main);
 	}
@@ -44,7 +44,7 @@ void	execute_outsiders(char *cmd_word, char **args, t_minishell *main)
 		ap_cmd = find_path(cmd_word, main);
 		if (!ap_cmd)
 			ft_error(cmd_word, "command not found\n", 0, main);
-		execve(ap_cmd, args, NULL);
+		execve(ap_cmd, main->args, main->env);
 
 	}
 	free(ap_cmd);
@@ -54,7 +54,6 @@ void    execute_cmd(t_command *cmd, t_minishell *main, int i)
 {
 	char    *cmd_word;
 	//int		check;
-	char	**args;
 
 	//check = 0;
 	if (i + 1 < main->cmds_count)
@@ -66,10 +65,10 @@ void    execute_cmd(t_command *cmd, t_minishell *main, int i)
 	/*if (check)
 		cmd = remove_redirect(cmd);*/
 	cmd_word = extract_cmd(cmd);
-	args = extract_args(cmd);
-	if (!cmd_manager(cmd_word, args, main))
-		execute_outsiders(cmd_word, args, main);
-	free_table(args);
+	main->args = extract_args(cmd);
+	main->env = envp_table(main);
+	if (!cmd_manager(cmd_word, main->args, main))
+		execute_outsiders(cmd_word, main);
 	free(cmd_word);
 }
 

@@ -5,7 +5,7 @@ void	read_till_delim(char *delimeter)
 	int		fd;
 	char	*line;
 
-	fd = open("_HEREDOC_", O_CREAT | O_RDWR | O_TRUNC | O_APPEND, S_IWUSR | S_IRUSR);
+	fd = open("._HEREDOC_", O_CREAT | O_RDWR | O_TRUNC | O_APPEND, S_IWUSR | S_IRUSR);
 	line = readline("> ");
 	while (line && ft_strcmp(line, delimeter))
 	{
@@ -47,7 +47,7 @@ void	redirect_hundler(t_command *cmd/*, int *check*/)
 		else if (cmd->tokens[i] == HERDOC)
 		{
             read_till_delim(cmd->cmd[j]);
-			fd_files[0] = open("_HEREDOC_", O_RDONLY);
+			fd_files[0] = open("._HEREDOC_", O_RDONLY);
 		}
 		if (/***/check == 1)
 			change_des(fd_files, cmd->cmd[j]);

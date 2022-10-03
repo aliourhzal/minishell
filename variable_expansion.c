@@ -6,6 +6,8 @@ char	*extract_value(char *name, t_minishell *main)
 
 	if (!name)
 		return (NULL);
+	if (name[0] == '?')
+		return (ft_itoa(main->exit_status));
 	head = main->envp;
 	while(head && ft_strcmp(name, head->id))
 		head = head->next;
@@ -50,28 +52,42 @@ char	*var_replace(char *value, char *cmd_word, int i, int j)
 	return (new_word);
 }
 
-char	*extract_name(char *cmd_word, t_minishell *main)
+char    *extract_name(char *cmd_word, int *i, int *j)
+{
+	char	*name;
+
+	if (cmd_word[*j] >= '0' && cmd_word[*j] <= '9')
+	{
+		name = dup_till_end(&cmd_word[*i + 1], cmd_word[*j + 1]);
+		*j += 1;
+	}
+	else if (cmd_word[*j] == '?')
+	{
+		name = ft_strdup("?");
+		*j += 1;
+	}
+	else
+	{
+		while (ft_isalpha(cmd_word[*j]) || ft_isalnum(cmd_word[*j]))
+			*j += 1;
+		name = dup_till_end(&cmd_word[*i + 1], cmd_word[*j]);
+	}
+	return (name);
+}
+
+char	*name_value(char *cmd_word, t_minishell *main)
 {
 	int 	i;
 	int		j;
 	char	*name;
 
 	i = -1;
-	if (!ft_strcmp(cmd_word, "$"))
-		return (cmd_word);
 	while (cmd_word[++i])
 	{
 		if (cmd_word[i] == '$' && cmd_word[i + 1])
 		{
 			j = i + 1;
-			if (cmd_word[j] >= '0' && cmd_word[j] <= '9')
-				name = dup_till_end(&cmd_word[i + 1], cmd_word[++j]);
-			else
-			{
-				while(ft_isalpha(cmd_word[j]) || ft_isalnum(cmd_word[j]))
-					j++;
-				name = dup_till_end(&cmd_word[i + 1], cmd_word[j]);
-			}
+            name = extract_name(cmd_word, &i, &j);
 			cmd_word = var_replace(extract_value(name, main), cmd_word, i, j);
 		}
 	}
@@ -88,7 +104,9 @@ void	variable_expansion(t_minishell   *main)
 	{
 		j = -1;
 		while(main->full_line[i].cmd[++j])
-			if (main->full_line[i].tokens[j] == WORD || main->full_line[i].tokens[j] == WORD_D)
-				main->full_line[i].cmd[j] = extract_name(main->full_line[i].cmd[j], main);
+			if ((main->full_line[i].tokens[j] == WORD
+				|| main->full_line[i].tokens[j] == WORD_D)
+				&& ft_strcmp(main->full_line[i].cmd[j], "$"))
+				main->full_line[i].cmd[j] = name_value(main->full_line[i].cmd[j], main);
 	}
 }

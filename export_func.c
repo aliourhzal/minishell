@@ -98,25 +98,6 @@ void	update_prop(char *arg, t_minishell *main)
 	}
 }
 
-char	**add_line(char **table, char *new_line)
-{
-	int	i;
-	char	**new_envp;
-
-	i = 0;
-	new_envp = malloc((count_table(table) + 2) * sizeof(char *));
-	while(table && table[i])
-	{
-		new_envp[i] = table[i];
-		i++;
-	}
-	new_envp[i++] = new_line;
-	new_envp[i] = 0;
-    if (table)
-	    free(table);
-	return (new_envp);
-}
-
 char	**envp_table(t_minishell *main)
 {
 	t_env *tmp;
@@ -131,9 +112,8 @@ char	**envp_table(t_minishell *main)
 			line = ft_strdup(tmp->id);
 		else
 		{
-			line = ft_strjoin(tmp->id, "=\"");
+			line = ft_strjoin(tmp->id, "=");
 			line = ft_joinstr(line, ft_strdup(tmp->value));
-			line = ft_joinstr(line, ft_strdup("\""));
 		}
 		if (line)
 		{
@@ -148,22 +128,24 @@ char	**envp_table(t_minishell *main)
 void	export_func(char **args, t_minishell *main)
 {
 	int		i;
-	char	**envp;
+	t_env	*tmp;
 
-	i = -1;
+	i = 0;
+	tmp = main->envp;
 	if (!args[1])
 	{
-		envp = envp_table(main);
-		while (envp[++i])
+		while (tmp)
 		{
 			write(1, "declare -x ", 11);
-			write(1, envp[i], ft_strlen(envp[i]));
+			write(1, tmp->id, ft_strlen(tmp->id));
+			write(1, "=\"", 2);
+			write(1, tmp->value, ft_strlen(tmp->value));
+			write(1, "\"", 1);
 			write(1, "\n", 1);
+			tmp = tmp->next;
 		}
-		free_table(envp);
 		return ;
 	}
-	i = 0;
 	while(args[++i])
 	{
 		if (check_id(args[i], main))

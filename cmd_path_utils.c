@@ -16,7 +16,7 @@ char	*extract_cmd(t_command    *cmd)
 	return (word_cmd);
 }
 
-char	**append_args(char **args, char *new_arg)
+/*char	**append_args(char **args, char *new_arg)
 {
 	int	i;
 	char	**args_table;
@@ -34,7 +34,7 @@ char	**append_args(char **args, char *new_arg)
 	args_table[i] = NULL;
 	free_table(args);
 	return (args_table);
-}
+}*/
 
 char	**extract_args(t_command *cmd)
 {
@@ -55,7 +55,7 @@ char	**extract_args(t_command *cmd)
 			i++;
 		}
 		if (cmd->tokens[i] != SPACES)
-			args = append_args(args, cmd->cmd[i]);
+			args = insert_text(args, cmd->cmd[i]);
 		i++;
 	}
 	return (args);
