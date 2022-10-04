@@ -178,8 +178,9 @@ void	lexer(t_minishell *main, char *line)
 	tokenize_line(&line[i], main);
 	variable_expansion(main);
 	combine_words(main);
-	//wildcard_expansion(main);
+	wildcard_expansion(main);
 	executor(main);
 	wait(&status);
+	main->exit_status = WEXITSTATUS(status);
 	dup2(main->save_std[0], 0);
 }

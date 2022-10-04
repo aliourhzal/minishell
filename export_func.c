@@ -138,9 +138,12 @@ void	export_func(char **args, t_minishell *main)
 		{
 			write(1, "declare -x ", 11);
 			write(1, tmp->id, ft_strlen(tmp->id));
-			write(1, "=\"", 2);
-			write(1, tmp->value, ft_strlen(tmp->value));
-			write(1, "\"", 1);
+			if (tmp->value)
+			{
+				write(1, "=\"", 2);
+				write(1, tmp->value, ft_strlen(tmp->value));
+				write(1, "\"", 1);
+			}
 			write(1, "\n", 1);
 			tmp = tmp->next;
 		}

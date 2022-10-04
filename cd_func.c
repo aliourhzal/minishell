@@ -50,16 +50,10 @@ void	cd_func(char **args, t_minishell *main)
 
 	fail = 0;
 	if (count_table(args) > 2)
-	{
 		fail = ft_error("cd", "too many arguments\n", 0, main);
-		return ;
-	}
-	if (args && chdir(args[1]) < 0)
-	{
+	else if (args && args[1] && chdir(args[1]) < 0)
 		fail = ft_error("cd", args[1], 1, main);
-		return ;
-	}
-	else if (!args)
+	else if (!args[1])
 		fail = cd_home(main);
 	if (!fail)
 	{
