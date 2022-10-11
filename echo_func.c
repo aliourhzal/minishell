@@ -4,7 +4,7 @@ void	echo_printer(char **args, int	n_line)
 {
 	int	i;
 
-	i = 0;
+	i = -1;
 	while (args[++i])
 	{
 		write(1, args[i], ft_strlen(args[i]));
@@ -37,11 +37,11 @@ void	echo_func(char **args, t_minishell *main)
 	int	i;
 	int	n_line;
 
-	i = -1;
+	i = 1;
 	n_line = 0;
 	if (args)
 	{
-		while(args[++i][0] == '-')
+		while(args[i][0] == '-')
 		{
 			if (is_flag(args[i]))
 			{

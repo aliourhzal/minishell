@@ -56,6 +56,7 @@ char    *extract_name(char *cmd_word, int *i, int *j)
 {
 	char	*name;
 
+	name = NULL;
 	if (cmd_word[*j] >= '0' && cmd_word[*j] <= '9')
 	{
 		name = dup_till_end(&cmd_word[*i + 1], cmd_word[*j + 1]);
@@ -84,11 +85,12 @@ char	*name_value(char *cmd_word, t_minishell *main)
 	i = -1;
 	while (cmd_word[++i])
 	{
-		if (cmd_word[i] == '$' && cmd_word[i + 1])
+		if (cmd_word[i] == '$' && ft_isalnum(cmd_word[i + 1]) && cmd_word[i + 1])
 		{
 			j = i + 1;
             name = extract_name(cmd_word, &i, &j);
 			cmd_word = var_replace(extract_value(name, main), cmd_word, i, j);
+			i = -1;
 		}
 	}
 	return (cmd_word);

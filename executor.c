@@ -44,6 +44,7 @@ void	execute_outsiders(char *cmd_word, t_minishell *main)
 		ap_cmd = find_path(cmd_word, main);
 		if (!ap_cmd)
 			ft_error(cmd_word, "command not found\n", 0, main);
+		write(main->save_std[1], cmd_word, ft_strlen(cmd_word));
 		execve(ap_cmd, main->args, main->env);
 
 	}
