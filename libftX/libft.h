@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aourhzal <aourhzal@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elix <elix@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/01 14:36:57 by ael-hadd          #+#    #+#             */
-/*   Updated: 2022/04/03 00:08:10 by aourhzal         ###   ########.fr       */
+/*   Updated: 2022/09/24 10:47:25 by elix             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	ft_putnbr_fd(int n, int fd); //done
 
 char	*ft_joinchr(char *s1, char s2);
 int		ft_strcmp(char *s1, char *s2);
-char	*ft_joinstr(char const *s1, char const *s2);
+char	*ft_joinstr(char *s1, char *s2);
 
 //Printf Part
 int		ft_printf(const char *form, ...);
